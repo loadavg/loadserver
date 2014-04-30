@@ -1,0 +1,21 @@
+# Make working with files in the most popular environments (OSX, Linux,
+# and Windows) as consistent as possible to avoid conflicts.
+
+# Set default behaviour, in case users don't have core.autocrlf set.
+* text=auto
+
+# Declare files that will always have CRLF line endings on checkout.
+*.sln text eol=crlf
+
+# Keep Shell scripts in UNIX format, batch files in Windows format
+*.bat text eol=crlf
+*.sh text eol=lf
+
+# Denote all files that are truly binary and should not be modified.
+*.jpg binary
+*.png binary
+
+# Explicitly declare text files we want to always be normalized and converted
+# to native line endings on checkout.
+*.c text
+*.h text

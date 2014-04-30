@@ -1,0 +1,38 @@
+<div class="row">
+  <div class="col-md-4">
+    <h2>Users list</h2>
+
+    <table class="table table-condensed table-hover">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Username</th>
+          <!-- <th>Password</th>
+          <th>API Token</th>
+          <th>Created</th>
+          <th>Updated</th> -->
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="user in users">
+          <td><b>{{user.id}}</b></td>
+          <td><a ui-sref="users.detail({user_id:user.id})">{{user.username}}</a></td>
+          <!-- <td>{{user.password}}</td>
+          <td>{{user.api_token}}</td>
+          <td>{{user.created_at}}</td>
+          <td>{{user.updated_at}}</td> -->
+        </tr>
+      </tbody>
+      <tfoot>
+        <td>
+
+        </td>
+      </tfoot>
+    </table>
+
+    <a class="btn btn-primary" ui-sref="users.new">Add New User</a>
+    <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+  </div>
+
+  <div ui-view class="col-md-8"></div>
+</div>
