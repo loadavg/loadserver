@@ -30,7 +30,7 @@ loadAvgApp.config(['$stateProvider', '$urlRouterProvider',
     .state('users.new', {
       url: '/new',
       templateUrl: 'public/tpl/users.new.html',
-      controller: 'EditController'
+      controller: 'AddController'
     })
     .state('users.detail', {
       url: '/{user_id:[0-9]{1,4}}',
@@ -104,6 +104,25 @@ loadAvgApp.controller('EditController',
 
 });
 
+
+// Add Controller
+loadAvgApp.controller('AddController',
+                      function AddController($scope, $http, $location){
+  $scope.master = {};
+  $scope.activePath = null;
+
+  $scope.new_user = function(user, NewUserForm) {
+    console.log(user);
+    $http.post('api/users', user).success(function(){
+      $scope.reset();
+      $scope.activePath = $location.path('/users');
+    });
+    $scope.reset = function() {
+      $scope.user = angular.copy($scope.master);
+    };
+    $scope.reset();
+  };
+});
 
 
 

@@ -11,16 +11,22 @@
           <th>API Token</th>
           <th>Created</th>
           <th>Updated</th> -->
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="user in users">
+        <tr ng-repeat="user in users | limitTo: 15">
           <td><b>{{user.id}}</b></td>
           <td><a ui-sref="users.detail({user_id:user.id})">{{user.username}}</a></td>
           <!-- <td>{{user.password}}</td>
           <td>{{user.api_token}}</td>
           <td>{{user.created_at}}</td>
           <td>{{user.updated_at}}</td> -->
+          <td>
+            <a class="btn btn-default btn-xs" style="text-decoration:none;" ui-sref="users.detail({user_id:user.id})">View</a> |
+            <button href="#" class="btn btn-info btn-xs">Edit</button> |
+            <button href="#" class="btn btn-danger btn-xs">Destroy</button>
+          </td>
         </tr>
       </tbody>
       <tfoot>

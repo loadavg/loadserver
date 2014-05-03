@@ -64,18 +64,22 @@ function getUser($id) {
 }
 
 function addUser() {
-  error_log("addUser\n", 3, "/var/tmp/php.log");
-  $request = Slim::getInstance()->request();
+  // error_log("addUser\n", 3, "/var/tmp/php.log");
+  // $request = Slim::getInstance()->request();
+  // $user = json_decode($request->getBody());
+
+  global $app;
+  $request = $app->request();
+  // $paramUsername = $request->params('username'); // Getting parameter with names
+  // $paramPassword = $request->params('password'); // Getting parameter with names
   $user = json_decode($request->getBody());
 
   //create random username
   // $username = 'loadavg_' . uniqid();
 
-  //create random password
-  // $password = md5(time());
-
   //generate api token
   $api_token = strtoupper(md5($user->username));
+  $hashed_pwd = hash_password($user->password);
 
   $sql = "INSERT INTO users (username, password, api_token, created_at, updated_at)
           VALUES (:username, :password, :api_token, NOW(), NOW())";
@@ -83,16 +87,15 @@ function addUser() {
   try {
     $db = getConnection();
     $stmt = $db->prepare($sql);
-    // $stmt->bindParam("name", $user->username);
     $stmt->bindParam("username", $user->username);
-    $stmt->bindParam("password", $user->password);
+    $stmt->bindParam("password", $hashed_pwd);
     $stmt->bindParam("api_token", $api_token);
     $stmt->execute();
     $user->id = $db->lastInsertId();
     $db = null;
     echo json_encode($user);
   } catch(PDOException $e) {
-    error_log($e->getMessage(), 3, '/var/tmp/php.log');
+    // error_log($e->getMessage(), 3, '/var/tmp/php.log');
     echo '{"error":{"message":'. $e->getMessage() .'}}';
   }
 
@@ -131,6 +134,20 @@ function deleteServer($id) {
 }
 
 
+// Hash password using PHPs new built-in method.
+function hash_password($password) {
+  // Configs for password_hash method
+  $options = [
+    'cost' => 11,
+    'salt' => mcrypt_create_iv(22, MCRYPT_DEV_URANDOM),
+  ];
+
+  $new_password = password_hash($password, PASSWORD_BCRYPT, $options);
+
+  return $new_password;
+}
+
+// Database connection method.
 function getConnection() {
   // Fetch DB settings.
   $settings = parse_ini_file("../config/settings.ini");
