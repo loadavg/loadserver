@@ -37,6 +37,11 @@ loadAvgApp.config(['$stateProvider', '$urlRouterProvider',
       templateUrl: 'public/tpl/users.detail.html',
       controller: 'EditController'
     })
+    .state('users.edit', {
+      url: '/{user_id:[0-9]{1,4}}/edit',
+      templateUrl: 'public/tpl/users.edit.html',
+      controller: 'EditController'
+    })
     .state('servers', {
       url: '/servers',
       templateUrl: 'public/tpl/servers.html',
@@ -87,19 +92,26 @@ loadAvgApp.controller('EditController',
   // Return a specified user
   $http.get('api/users/' + id).success(function(data){
     $scope.user = data;
-    // console.log("user_id: " + id);
   });
 
-  $scope.new_user = function(user, NewUserForm) {
+  // Update specified user record
+  $scope.update_user = function(user, EditUserForm) {
     console.log(user);
-    $http.post('api/users', user).success(function(){
-      $scope.reset();
-      $scope.activePath = $location.path('/users');
+    $http.put('api/users/' + id, user).success(function(data){
+      $scope.user = data;
+      $scope.activePath = $location.path('/users/' + id);
     });
-    $scope.reset = function(){
-      $scope.user = angular.copy($scope.master);
-    };
-    $scope.reset();
+  };
+
+  // Delete specififed user
+  $scope.delete_user = function(user) {
+    console.log(user);
+    var deleteUser = confirm('Are you absolutely sure you want to destroy this user?');
+
+    if (deleteUser) {
+      $http.delete('api/users/' + user.id);
+      $scope.activePath = $location.path('/users');
+    }
   };
 
 });

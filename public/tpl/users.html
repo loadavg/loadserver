@@ -17,15 +17,15 @@
       <tbody>
         <tr ng-repeat="user in users | limitTo: 15">
           <td><b>{{user.id}}</b></td>
-          <td><a ui-sref="users.detail({user_id:user.id})">{{user.username}}</a></td>
+          <td><a ui-sref="users.detail({user_id:user.id})" class="no-underline">{{user.username}}</a></td>
           <!-- <td>{{user.password}}</td>
           <td>{{user.api_token}}</td>
           <td>{{user.created_at}}</td>
           <td>{{user.updated_at}}</td> -->
           <td>
-            <a class="btn btn-default btn-xs" style="text-decoration:none;" ui-sref="users.detail({user_id:user.id})">View</a> |
-            <button href="#" class="btn btn-info btn-xs">Edit</button> |
-            <button href="#" class="btn btn-danger btn-xs">Destroy</button>
+            <a class="btn btn-default btn-xs no-underline" ui-sref="users.detail({user_id:user.id})">View</a> |
+            <a class="btn btn-default btn-xs no-underline" ui-sref="users.edit({user_id:user.id})">Edit</a>
+            <!-- <button class="btn btn-danger btn-xs" ng-click="delete_user(user)">Destroy</button> -->
           </td>
         </tr>
       </tbody>

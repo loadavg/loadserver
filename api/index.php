@@ -65,13 +65,7 @@ function getUser($id) {
 
 function addUser() {
   // error_log("addUser\n", 3, "/var/tmp/php.log");
-  // $request = Slim::getInstance()->request();
-  // $user = json_decode($request->getBody());
-
-  global $app;
-  $request = $app->request();
-  // $paramUsername = $request->params('username'); // Getting parameter with names
-  // $paramPassword = $request->params('password'); // Getting parameter with names
+  $request = \Slim\Slim::getInstance()->request();
   $user = json_decode($request->getBody());
 
   //create random username
@@ -102,11 +96,39 @@ function addUser() {
 }
 
 function updateUser($id) {
-  # code...
+  $request = \Slim\Slim::getInstance()->request();
+  $user = json_decode($request->getBody());
+
+  $hashed_pwd = hash_password($user->password);
+  $sql = "UPDATE users SET password=:password, updated_at=NOW() WHERE id=:id";
+
+  try {
+    $db = getConnection();
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam("password", $hashed_pwd);
+    $stmt->bindParam("id", $id);
+    $stmt->execute();
+    $db = null;
+    echo json_encode($user);
+  } catch(PDOException $e) {
+    // error_log($e->getMessage(), 3, '/var/tmp/php.log');
+    echo '{"error":{"message":'. $e->getMessage() .'}}';
+  }
 }
 
 function deleteUser($id) {
-  # code...
+  $sql = "DELETE FROM users WHERE id=:id";
+
+  try {
+    $db = getConnection();
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam("id", $id);
+    $status->status = $stmt->execute();
+    $db = null;
+    echo json_encode($status);
+  } catch(PDOException $e) {
+    echo '{"error":{"message":'. $e->getMessage() .'}}';
+  }
 }
 
 /*
