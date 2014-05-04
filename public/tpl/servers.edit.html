@@ -1,0 +1,17 @@
+<h2>Edit Server</h2>
+
+<div class="alert alert-info">
+  In this particular version fo the application you are only allowed to update
+  the server's name. All other features will be suppressed until we move out
+  of the beta phase. Sorry for any inconvenience caused.
+</div>
+
+<form novalidate name="EditServerForm" method="post" action="">
+  <div class="form-group">
+    <label for="server_name">Server Name:</label>
+    <input class="form-control" type="text" ng-model="server.server_name" required />
+  </div>
+  <button class="btn btn-primary" ng-disable="EditServerForm.$invalid || isUnchanged(server)" ng-click="update_server(server)">Save changes</button>
+  <button class="btn btn-danger" ng-click="delete_server(server)">Destroy</button>
+  <a ui-sref="servers" class="btn btn-default">Cancel</a>
+</form>

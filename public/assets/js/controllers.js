@@ -52,6 +52,16 @@ loadAvgApp.config(['$stateProvider', '$urlRouterProvider',
       templateUrl: 'public/tpl/servers.html',
       controller: 'ListController'
     })
+    .state('servers.detail', {
+      url: '/{server_id:[0-9]{1,4}}',
+      templateUrl: 'public/tpl/servers.detail.html',
+      controller: 'EditController'
+    })
+    .state('servers.edit', {
+      url: '/{server_id:[0-9]{1,4}}/edit',
+      templateUrl: 'public/tpl/servers.edit.html',
+      controller: 'EditController'
+    })
     .state('about', {
       url: '/about',
       templateUrl: 'public/tpl/about.html'
@@ -115,6 +125,10 @@ loadAvgApp.controller('ListController',
     $scope.users = data;
   });
 
+  $http.get('api/servers').success(function(data){
+    $scope.servers = data;
+  });
+
   // callback for ng-click cancel
   $scope.cancel = function() {
     $location.path('/');
@@ -126,21 +140,36 @@ loadAvgApp.controller('ListController',
 // Edit controller
 loadAvgApp.controller('EditController',
                       function EditController($scope, $http, $location, $stateParams){
-  var id = $stateParams.user_id;
+  var uid = $stateParams.user_id;
+  var sid = $stateParams.server_id;
   $scope.master = {};
   $scope.activePath = null;
 
   // Return a specified user
-  $http.get('api/users/' + id).success(function(data){
+  $http.get('api/users/' + uid).success(function(data){
     $scope.user = data;
+  });
+
+  // Return a specified server
+  $http.get('api/servers/' + sid).success(function(data){
+    $scope.server = data;
   });
 
   // Update specified user record
   $scope.update_user = function(user, EditUserForm) {
     console.log(user);
-    $http.put('api/users/' + id, user).success(function(data){
+    $http.put('api/users/' + uid, user).success(function(data){
       $scope.user = data;
-      $scope.activePath = $location.path('/users/' + id);
+      $scope.activePath = $location.path('/users/' + uid);
+    });
+  };
+
+  // Update specified server record
+  $scope.update_server = function(server, EditServerForm) {
+    console.log(server);
+    $http.put('api/servers/' + sid, server).success(function(data){
+      $scope.server = data;
+      $scope.activePath = $location.path('/servers/' + sid);
     });
   };
 
@@ -152,6 +181,17 @@ loadAvgApp.controller('EditController',
     if (deleteUser) {
       $http.delete('api/users/' + user.id);
       $scope.activePath = $location.path('/users');
+    }
+  };
+
+  // Delete specififed server
+  $scope.delete_server = function(server) {
+    console.log(server);
+    var deleteServer = confirm('Are you absolutely sure you want to destroy this server?');
+
+    if (deleteServer) {
+      $http.delete('api/servers/' + server.id);
+      $scope.activePath = $location.path('/servers');
     }
   };
 
