@@ -153,6 +153,7 @@ loadAvgApp.controller('EditController',
   // Return a specified server
   $http.get('api/servers/' + sid).success(function(data){
     $scope.server = data;
+    console.log($scope.server);
   });
 
   // Update specified user record

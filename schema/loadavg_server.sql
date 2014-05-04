@@ -42,7 +42,10 @@ CREATE TABLE `servers` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`)
+  KEY `user_id` (`user_id`),
+  FOREIGN KEY (`user_id`)
+  REFERENCES users (`id`)
+  ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
 
 
@@ -54,7 +57,10 @@ CREATE TABLE `server_data` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `server_id` (`server_id`)
+  KEY `server_id` (`server_id`),
+  FOREIGN KEY (`server_id`)
+  REFERENCES servers (`id`)
+  ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
 
 

@@ -186,7 +186,8 @@ function getServers() {
 
 // Get the server with the requested ID
 function getServer($id) {
-  $sql = "SELECT * FROM servers WHERE id=:id";
+  $sql = "SELECT servers.*, users.id AS uid, users.first_name, users.last_name FROM servers
+          INNER JOIN users ON servers.user_id = users.id WHERE servers.id=:id";
 
   try {
     $db = getConnection();
@@ -224,8 +225,8 @@ function addServer($userId) {
     $server->id = $db->lastInsertId();
     $stmt2->bindParam("user_id", $userId);
     $stmt2->execute();
-    $server_count = $stmt2->fetchObject();
-    $stmt3->bindParam("server_count", $server_count->server_count);
+    $sCount = $stmt2->fetchObject();
+    $stmt3->bindParam("server_count", $sCount->server_count);
     $stmt3->bindParam("user_id", $userId);
     $stmt3->execute();
     $db = null;
