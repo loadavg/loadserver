@@ -102,12 +102,15 @@ function addUser() {
   $api_token = strtoupper(md5($user->username));
   $hashed_pwd = hash_password($user->password);
 
-  $sql = "INSERT INTO users (username, password, api_token, created_at, updated_at)
-          VALUES (:username, :password, :api_token, NOW(), NOW())";
+  $sql = "INSERT INTO users (first_name, last_name, email, username, password, api_token, created_at, updated_at)
+          VALUES (:first_name, :last_name, :email, :username, :password, :api_token, NOW(), NOW())";
 
   try {
     $db = getConnection();
     $stmt = $db->prepare($sql);
+    $stmt->bindParam("first_name", $user->first_name);
+    $stmt->bindParam("last_name", $user->last_name);
+    $stmt->bindParam("email", $user->email);
     $stmt->bindParam("username", $user->username);
     $stmt->bindParam("password", $hashed_pwd);
     $stmt->bindParam("api_token", $api_token);
@@ -127,11 +130,15 @@ function updateUser($id) {
   $user = json_decode($request->getBody());
 
   $hashed_pwd = hash_password($user->password);
-  $sql = "UPDATE users SET password=:password, updated_at=NOW() WHERE id=:id";
+  $sql = "UPDATE users SET first_name=:first_name, last_name=:last_name, email=:email,
+          password=:password, updated_at=NOW() WHERE id=:id";
 
   try {
     $db = getConnection();
     $stmt = $db->prepare($sql);
+    $stmt->bindParam("first_name", $user->first_name);
+    $stmt->bindParam("last_name", $user->last_name);
+    $stmt->bindParam("email", $user->email);
     $stmt->bindParam("password", $hashed_pwd);
     $stmt->bindParam("id", $id);
     $stmt->execute();

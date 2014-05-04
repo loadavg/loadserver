@@ -6,7 +6,7 @@
       <thead>
         <tr>
           <th>ID</th>
-          <th>Username</th>
+          <th>Name</th>
           <!-- <th>Password</th>
           <th>API Token</th>
           <th>Created</th>
@@ -17,7 +17,7 @@
       <tbody>
         <tr ng-repeat="user in users | limitTo: 15">
           <td><b>{{user.id}}</b></td>
-          <td><a ui-sref="users.detail({user_id:user.id})" class="no-underline">{{user.username}}</a></td>
+          <td><a ui-sref="users.detail({user_id:user.id})" class="no-underline">{{user.first_name}} {{user.last_name}}</a></td>
           <!-- <td>{{user.password}}</td>
           <td>{{user.api_token}}</td>
           <td>{{user.created_at}}</td>

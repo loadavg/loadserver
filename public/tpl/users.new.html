@@ -1,18 +1,43 @@
 <h2>Add User</h2>
 
-<form novalidate name="NewUserForm" method="post" action="">
+<form novalidate name="NewUserForm" method="post">
   <div class="form-group">
-    <label for="username">Username:</label>
-    <input class="form-control" type="text" ng-model="user.username" required />
+    <label for="first_name">First Name: <span style="color:red;">*</span></label>
+    <input class="form-control" type="text" ng-model="user.first_name" ng-minlength="3" ng-maxlength="60" required />
+    <p ng-show="NewUserForm.first_name.$invalid && !NewUserForm.first_name.$pristine" class="help-block">First name is required.</p>
+    <p ng-show="NewUserForm.first_name.$error.minlength" class="help-block">First name is too short.</p>
+    <p ng-show="NewUserForm.first_name.$error.maxlength" class="help-block">First name is too long.</p>
   </div>
   <div class="form-group">
-    <label for="password">Password:</label>
-    <input class="form-control" type="password" ng-model="user.password" required />
+    <label for="last_name">Last Name: <span style="color:red;">*</span></label>
+    <input class="form-control" type="text" ng-model="user.last_name" ng-minlength="3" ng-maxlength="60" required />
+    <p ng-show="NewUserForm.last_name.$invalid && !NewUserForm.last_name.$pristine" class="help-block">Last name is required.</p>
+    <p ng-show="NewUserForm.last_name.$error.minlength" class="help-block">Last name is too short.</p>
+    <p ng-show="NewUserForm.last_name.$error.maxlength" class="help-block">Last name is too long.</p>
   </div>
   <div class="form-group">
-    <label for="password_confirmation">Confirm Password:</label>
-    <input class="form-control" type="password" ng-model="user.password_confirmation" required />
+    <label for="email">Email: <span style="color:red;">*</span></label>
+    <input class="form-control" type="email" ng-model="user.email" required />
+    <p ng-show="NewUserForm.email.$invalid && !NewUserForm.email.$pristine" class="help-block">Enter a valid email.</p>
+  </div>
+  <div class="form-group">
+    <label for="username">Username: <span style="color:red;">*</span></label>
+    <input class="form-control" type="text" ng-model="user.username" ng-minlength="6" required />
+    <p class="help-block">Minimum username length is 6 characters.</p>
+    <p ng-show="NewUserForm.username.$invalid && !NewUserForm.username.$pristine" class="help-block">Username is required.</p>
+    <p ng-show="NewUserForm.username.$error.minlength" class="help-block">First name is too short.</p>
+  </div>
+  <div class="form-group">
+    <label for="password">Password: <span style="color:red;">*</span></label>
+    <input class="form-control" type="password" ng-model="user.password" ng-minlength="8" required />
+    <p class="help-block">Minimum password length is 8 characters.</p>
+    <p ng-show="NewUserForm.password.$invalid && !NewUserForm.password.$pristine" class="help-block">A password is required.</p>
+    <p ng-show="NewUserForm.password.$error.minlength" class="help-block">Password is too short.</p>
   </div>
   <button class="btn btn-primary" ng-disabled="NewUserForm.$invalid || isUnchanged(user)" ng-click="new_user(user)">Save</button>
   <a ui-sref="users" class="btn btn-default">Cancel</a>
 </form>
+
+<br>
+
+<span style="color:red;">(*) denotes fields that are required.</span>
