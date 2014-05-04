@@ -3,20 +3,15 @@ require 'vendor/autoload.php';
 
 $app = new \Slim\Slim();
 
-// default route
-/*$app->get('/', function () use ($app) {
-  $app->render('home.html');
-});
-
-$app->get('/about', function () use ($app) {
-  $app->render('about.html');
-});*/
 
 // routes to user resources
 $app->get('/users', 'getUsers');
 $app->get('/users/:id', 'getUser');
+$app->get('/users/:id/servers', 'getUserServers');
+$app->get('/users/:id/serverCount', 'getServerCount');
 // $app->get('/users/search/:query', 'findByName');
 $app->post('/users', 'addUser');
+$app->post('/users/:id/servers', 'addServer');
 $app->put('/users/:id', 'updateUser');
 $app->delete('/users/:id', 'deleteUser');
 
@@ -24,19 +19,26 @@ $app->delete('/users/:id', 'deleteUser');
 $app->get('/servers', 'getServers');
 $app->get('/servers/:id', 'getServer');
 // $app->get('/servers/search/:query', 'findByName');
-$app->post('/servers', 'addServer');
 $app->put('/servers/:id', 'updateServer');
 $app->delete('/servers/:id', 'deleteServer');
 
 $app->run();
 
 
+// TODO: Implement method to secure API
+function verifyKey(\Slim\Route $route) {
+  return false;
+}
+
+
 /*
  * All User related methods
  */
 
+// Return a list of all the users
 function getUsers() {
   $sql = "SELECT * FROM users ORDER BY id DESC";
+
   try {
     $db = getConnection();
     $stmt = $db->query($sql);
@@ -48,8 +50,10 @@ function getUsers() {
   }
 }
 
+// Get user with the requested ID
 function getUser($id) {
   $sql = "SELECT * FROM users WHERE id=:id";
+
   try {
     $db = getConnection();
     $stmt = $db->prepare($sql);
@@ -63,8 +67,31 @@ function getUser($id) {
   }
 }
 
+// Return a list of all servers assigned to a user
+function getUserServers($id) {
+  echo "You should see all servers for user with ID: {$id} here...";
+}
+
+// Return a count of all the servers belonging to a user
+function getServerCount($userId) {
+  $sql = "SELECT COUNT(*) AS server_count FROM servers
+          WHERE user_id=:user_id";
+
+  try {
+    $db = getConnection();
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam("user_id", $userId);
+    $stmt->execute();
+    $server_count = $stmt->fetchObject();
+    $db = null;
+    echo json_encode($server_count);
+  } catch (PDOException $e) {
+    echo '{"error":{"message":'. $e->getMessage() .'}}';
+  }
+}
+
+// Add a new user
 function addUser() {
-  // error_log("addUser\n", 3, "/var/tmp/php.log");
   $request = \Slim\Slim::getInstance()->request();
   $user = json_decode($request->getBody());
 
@@ -89,12 +116,12 @@ function addUser() {
     $db = null;
     echo json_encode($user);
   } catch(PDOException $e) {
-    // error_log($e->getMessage(), 3, '/var/tmp/php.log');
     echo '{"error":{"message":'. $e->getMessage() .'}}';
   }
 
 }
 
+// Update user with specified ID
 function updateUser($id) {
   $request = \Slim\Slim::getInstance()->request();
   $user = json_decode($request->getBody());
@@ -111,11 +138,11 @@ function updateUser($id) {
     $db = null;
     echo json_encode($user);
   } catch(PDOException $e) {
-    // error_log($e->getMessage(), 3, '/var/tmp/php.log');
     echo '{"error":{"message":'. $e->getMessage() .'}}';
   }
 }
 
+// Delete user with specified ID
 function deleteUser($id) {
   $sql = "DELETE FROM users WHERE id=:id";
 
@@ -135,24 +162,107 @@ function deleteUser($id) {
  * All Server related methods
  */
 
+// Return a list of all the servers
 function getServers() {
-  # code...
+  $sql = "SELECT * FROM servers ORDER BY id DESC";
+
+  try {
+    $db = getConnection();
+    $stmt = $db->query($sql);
+    $servers = $stmt->fetchAll(PDO::FETCH_OBJ);
+    $db = null;
+    echo json_encode($servers);
+  } catch(PDOException $e) {
+    echo '{"error":{"message":'. $e->getMessage() .'}}';
+  }
 }
 
+// Get the server with the requested ID
 function getServer($id) {
-  # code...
+  $sql = "SELECT * FROM servers WHERE id=:id";
+
+  try {
+    $db = getConnection();
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam("id", $id);
+    $stmt->execute();
+    $server = $stmt->fetchObject();
+    $db = null;
+    echo json_encode($server);
+  } catch(PDOException $e) {
+    echo '{"error":{"message":'. $e->getMessage() .'}}';
+  }
 }
 
-function addServer() {
-  # code...
+// Add a new server for a selected user
+function addServer($userId) {
+  $request = \Slim\Slim::getInstance()->request();
+  $server = json_decode($request->getBody());
+
+  $sql = "INSERT INTO servers (user_id, server_name, created_at, updated_at)
+          VALUES (:user_id, :server_name, NOW(), NOW())";
+
+  $sql2 = "SELECT COUNT(*) AS server_count FROM servers WHERE user_id=:user_id";
+
+  $sql3 = "UPDATE users SET server_count=:server_count WHERE id=:user_id";
+
+  try {
+    $db = getConnection();
+    $stmt = $db->prepare($sql);
+    $stmt2 = $db->prepare($sql2);
+    $stmt3 = $db->prepare($sql3);
+    $stmt->bindParam("user_id", $userId);
+    $stmt->bindParam("server_name", $server->server_name);
+    $stmt->execute();
+    $server->id = $db->lastInsertId();
+    $stmt2->bindParam("user_id", $userId);
+    $stmt2->execute();
+    $server_count = $stmt2->fetchObject();
+    $stmt3->bindParam("server_count", $server_count->server_count);
+    $stmt3->bindParam("user_id", $userId);
+    $stmt3->execute();
+    $db = null;
+    echo json_encode($server);
+  } catch(PDOException $e) {
+    echo '{"error":{"message":'. $e->getMessage() .'}}';
+  }
 }
 
+// Update server with specified ID
 function updateServer($id) {
-  # code...
+  $request = \Slim\Slim::getInstance()->request();
+  $server = json_decode($request->getBody());
+
+  $sql = "UPDATE servers SET user_id=:user_id, server_name=:server_name, updated_at=NOW() WHERE id=:id";
+
+  try {
+    $db = getConnection();
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam("user_id", $server->user_id);
+    $stmt->bindParam("server_name", $server->server_name);
+    $stmt->bindParam("id", $id);
+    $stmt->execute();
+    $db = null;
+    echo json_encode($server);
+  } catch(PDOException $e) {
+    echo '{"error":{"message":'. $e->getMessage() .'}}';
+  }
 }
 
+// Delete server with specified ID
 function deleteServer($id) {
-  # code...
+  $sql = "DELETE FROM servers WHERE id=:id";
+
+  try {
+    $db = getConnection();
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam("id", $id);
+    $status->status = $stmt->execute();
+    $db = null;
+    echo json_encode($status);
+  } catch(PDOException $e) {
+    echo '{"error":{"message":'. $e->getMessage() .'}}';
+  }
 }
 
 

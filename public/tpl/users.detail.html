@@ -14,8 +14,8 @@
 
 <hr>
 
-<button class="btn btn-primary">Add Server</button>
+<a ui-sref="users.server({user_id:user.id})" class="btn btn-primary">Add Server</a>
 
 <h4>Servers managed:</h4>
 
-<p>Currently: <b>0</b></p>
+<p>Currently: <b>{{user.server_count}}</b></p>

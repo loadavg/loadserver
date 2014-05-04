@@ -1,30 +1,29 @@
 <div class="row">
   <div class="col-md-4">
-    <h2>Users list</h2>
+    <h2>Severs list</h2>
 
     <table class="table table-condensed table-hover">
       <thead>
         <tr>
           <th>ID</th>
-          <th>Username</th>
-          <!-- <th>Password</th>
-          <th>API Token</th>
+          <th>Server Name</th>
+          <!-- <th>API Token</th>
           <th>Created</th>
           <th>Updated</th> -->
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="user in users | limitTo: 15">
-          <td><b>{{user.id}}</b></td>
-          <td><a ui-sref="users.detail({user_id:user.id})" class="no-underline">{{user.username}}</a></td>
+        <tr ng-repeat="server in servers | limitTo: 15">
+          <td><b>{{server.id}}</b></td>
+          <td><a ui-sref="servers.detail({server_id:server.id})" class="no-underline">{{server.server_name}}</a></td>
           <!-- <td>{{user.password}}</td>
           <td>{{user.api_token}}</td>
           <td>{{user.created_at}}</td>
           <td>{{user.updated_at}}</td> -->
           <td>
-            <a class="btn btn-default btn-xs no-underline" ui-sref="users.detail({user_id:user.id})">View</a> |
-            <a class="btn btn-default btn-xs no-underline" ui-sref="users.edit({user_id:user.id})">Edit</a>
+            <a class="btn btn-default btn-xs no-underline" ui-sref="servers.detail({server_id:server.id})">View</a> |
+            <a class="btn btn-default btn-xs no-underline" ui-sref="servers.edit({server_id:server.id})">Edit</a>
             <!-- <button class="btn btn-danger btn-xs" ng-click="delete_user(user)">Destroy</button> -->
           </td>
         </tr>
@@ -36,9 +35,9 @@
       </tfoot>
     </table>
 
-    <a class="btn btn-primary" ui-sref="users.new">Add New User</a>
+    <a class="btn btn-primary" ui-sref="servers.new">Add New User</a>
     <button class="btn btn-default" ng-click="cancel()">Cancel</button>
   </div>
 
-  <div ui-view class="col-md-8">I need a placeholder here...</div>
+  <div ui-view class="col-md-8">I need a next placeholder here...</div>
 </div>

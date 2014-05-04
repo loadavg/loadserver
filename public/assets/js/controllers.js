@@ -32,6 +32,11 @@ loadAvgApp.config(['$stateProvider', '$urlRouterProvider',
       templateUrl: 'public/tpl/users.new.html',
       controller: 'AddController'
     })
+    .state('users.server', {
+      url: '/{user_id:[0-9]{1,4}}/servers/new',
+      templateUrl: 'public/tpl/users.server.new.html',
+      controller: 'AddController'
+    })
     .state('users.detail', {
       url: '/{user_id:[0-9]{1,4}}',
       templateUrl: 'public/tpl/users.detail.html',
@@ -45,7 +50,7 @@ loadAvgApp.config(['$stateProvider', '$urlRouterProvider',
     .state('servers', {
       url: '/servers',
       templateUrl: 'public/tpl/servers.html',
-      controller: 'ServersController'
+      controller: 'ListController'
     })
     .state('about', {
       url: '/about',
@@ -65,6 +70,42 @@ loadAvgApp.run(['$rootScope', '$state', '$stateParams',
   $rootScope.app_name = "LoadAvg Server"
   $rootScope.app_version = "version 1.0"
 }]);
+
+
+// Add Controller
+loadAvgApp.controller('AddController',
+                      function AddController($scope, $http, $location, $stateParams){
+  var id = $stateParams.user_id;
+  $scope.master = {};
+  $scope.activePath = null;
+
+  // Add a new user
+  $scope.new_user = function(user, NewUserForm) {
+    console.log(user);
+    $http.post('api/users', user).success(function(){
+      $scope.reset();
+      $scope.activePath = $location.path('/users');
+    });
+    $scope.reset = function() {
+      $scope.user = angular.copy($scope.master);
+    };
+    $scope.reset();
+  };
+
+  // Add a new server for a specified user
+  $scope.new_server = function(server, NewServerForm) {
+    console.log(server);
+    $http.post('api/users/' + id + '/servers', server).success(function(){
+      $scope.reset();
+      $scope.activePath = $location.path('/users/' + id);
+    });
+    $scope.reset = function() {
+      $scope.server = angular.copy($scope.master);
+    };
+    $scope.reset();
+  };
+});
+
 
 // List controller
 loadAvgApp.controller('ListController',
@@ -114,26 +155,6 @@ loadAvgApp.controller('EditController',
     }
   };
 
-});
-
-
-// Add Controller
-loadAvgApp.controller('AddController',
-                      function AddController($scope, $http, $location){
-  $scope.master = {};
-  $scope.activePath = null;
-
-  $scope.new_user = function(user, NewUserForm) {
-    console.log(user);
-    $http.post('api/users', user).success(function(){
-      $scope.reset();
-      $scope.activePath = $location.path('/users');
-    });
-    $scope.reset = function() {
-      $scope.user = angular.copy($scope.master);
-    };
-    $scope.reset();
-  };
 });
 
 
