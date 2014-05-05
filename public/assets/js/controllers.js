@@ -155,13 +155,14 @@ loadAvgApp.controller('ListController',
     $location.path('/');
   };
 
-  $scope.set_page = function(pageNo) {
+  $scope.setPage = function(pageNo) {
     $scope.currentPage = pageNo;
   };
 
   $scope.filter = function() {
     $timeout(function(){
-      $scope.filteredItems = $scope.filtered.length;
+      $scope.userFilteredItems = $scope.filtered.length;
+      $scope.serverFilteredItems = $scope.filtered.length;
     }, 10);
   };
 
