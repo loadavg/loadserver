@@ -94,9 +94,34 @@ loadAvgApp.filter('startFrom', function() {
 });
 
 
+//
+/*loadAvgApp.factory('Storage', function($q, $http) {
+  var storage =  {};
+  storage.get = function(callback) {
+    if( ! storage.storedData){
+      return $http.get('api/users').then(function(res){
+        storage.storedData=res.data;
+        return storage.storedData
+      }).then(callback)
+    } else {
+      var def= $q.defer();
+      def.done(callback);
+      defer.resolve(storage.storedData);
+      return def.promise;
+    }
+  }
+  storage.set = function(obj) {
+    // do ajax update and on success
+    storage.storedData.push(obj);
+  }
+  return storage;
+});*/
+
+
 // Add Controller
 loadAvgApp.controller('AddController',
-                      function AddController($scope, $http, $location, $stateParams){
+                      function AddController($scope, $http, $location,
+                                             $stateParams){
   var id = $stateParams.user_id;
   $scope.master = {};
   $scope.activePath = null;
@@ -126,12 +151,14 @@ loadAvgApp.controller('AddController',
     };
     $scope.reset();
   };
+
 });
 
 
 // List controller
 loadAvgApp.controller('ListController',
-                      function ListController($scope, $http, $location, $timeout){
+                      function ListController($scope, $http, $location,
+                                              $timeout){
 
   // Return a list of all the users
   $http.get('api/users').success(function(data){

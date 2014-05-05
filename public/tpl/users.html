@@ -5,8 +5,8 @@
     <table class="table table-condensed table-hover" data-ng-show="userFilteredItems > 0">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Name</th>
+          <th><a ng-click="sort_by('id');">ID&nbsp;<i style="font-size:10px;" class="glyphicon glyphicon-sort"></i></a></th>
+          <th><a ng-click="sort_by('last_name');">Name&nbsp;<i style="font-size:10px;" class="glyphicon glyphicon-sort"></i></a></th>
           <!-- <th>Password</th>
           <th>API Token</th>
           <th>Created</th>
