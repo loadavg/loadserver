@@ -2,7 +2,7 @@
   <div class="col-md-4">
     <h2>Users list</h2>
 
-    <table class="table table-condensed table-hover">
+    <table class="table table-condensed table-hover" data-ng-show="userFilteredItems > 0">
       <thead>
         <tr>
           <th>ID</th>
@@ -15,7 +15,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="user in users | limitTo: 15">
+        <tr ng-repeat="user in filtered = (users | filter:search | orderBy:predicate:reverse) | startFrom:(currentPage-1)*itemsPerPage | limitTo:itemsPerPage">
           <td><b>{{user.id}}</b></td>
           <td><a ui-sref="users.detail({user_id:user.id})" class="no-underline">{{user.first_name}} {{user.last_name}}</a></td>
           <!-- <td>{{user.password}}</td>
@@ -30,11 +30,18 @@
         </tr>
       </tbody>
       <tfoot>
-        <td>
-
+        <td colspan="6">
+          <div class="col-md-12" data-ng-show="userFilteredItems > 0">
+            <div data-pagination="" data-page="currentPage" data-on-select-page="setPage(page)" data-boundary-links="true" data-total-items="userFilteredItems" items-per-page="itemsPerPage" class="pagination-small pull-right" data-previous-text="&laquo;" data-next-text="&raquo;"></div>
+          </div>
         </td>
       </tfoot>
     </table>
+    <div class="col-md-12" data-ng-show="userFilteredItems == 0">
+      <div class="col-md-12">
+        <h4>No users found</h4>
+      </div>
+    </div>
 
     <a class="btn btn-primary" ui-sref="users.new">Add New User</a>
     <button class="btn btn-default" ng-click="cancel()">Cancel</button>

@@ -1,4 +1,4 @@
-var loadAvgApp = angular.module('loadAvgApp', ['ui.router']);
+var loadAvgApp = angular.module('loadAvgApp', ['ui.router', 'ui.bootstrap']);
 
 // Setting up Object-based states
 /*var users = {
@@ -82,6 +82,18 @@ loadAvgApp.run(['$rootScope', '$state', '$stateParams',
 }]);
 
 
+// Filter
+loadAvgApp.filter('startFrom', function() {
+  return function(input, start) {
+    if(input) {
+      start = +start; //parse to int
+      return input.slice(start);
+    }
+    return [];
+  }
+});
+
+
 // Add Controller
 loadAvgApp.controller('AddController',
                       function AddController($scope, $http, $location, $stateParams){
@@ -119,19 +131,43 @@ loadAvgApp.controller('AddController',
 
 // List controller
 loadAvgApp.controller('ListController',
-                      function ListController($scope, $http, $location){
+                      function ListController($scope, $http, $location, $timeout){
+
   // Return a list of all the users
   $http.get('api/users').success(function(data){
     $scope.users = data;
+    $scope.currentPage = 1;
+    $scope.itemsPerPage = 15;
+    $scope.userFilteredItems = $scope.users.length;
+    $scope.totalItems = $scope.users.lenght;
   });
 
   $http.get('api/servers').success(function(data){
     $scope.servers = data;
+    $scope.currentPage = 1;
+    $scope.itemsPerPage = 15;
+    $scope.serverFilteredItems = $scope.servers.length;
+    $scope.totalItems = $scope.servers.lenght;
   });
 
   // callback for ng-click cancel
   $scope.cancel = function() {
     $location.path('/');
+  };
+
+  $scope.set_page = function(pageNo) {
+    $scope.currentPage = pageNo;
+  };
+
+  $scope.filter = function() {
+    $timeout(function(){
+      $scope.filteredItems = $scope.filtered.length;
+    }, 10);
+  };
+
+  $scope.sort_by = function(predicate) {
+    $scope.predicate = predicate;
+    $scope.reverse = !$scope.reverse;
   };
 
 });
@@ -153,7 +189,6 @@ loadAvgApp.controller('EditController',
   // Return a specified server
   $http.get('api/servers/' + sid).success(function(data){
     $scope.server = data;
-    console.log($scope.server);
   });
 
   // Update specified user record

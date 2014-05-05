@@ -99,7 +99,7 @@ function addUser() {
   // $username = 'loadavg_' . uniqid();
 
   //generate api token
-  $api_token = strtoupper(md5($user->username));
+  $api_token = md5($user->username);
   $hashed_pwd = hash_password($user->password);
 
   $sql = "INSERT INTO users (first_name, last_name, email, username, password, api_token, created_at, updated_at)
