@@ -1,3 +1,17 @@
+<!--
+* LoadAvg - Server Monitoring & Analytics
+* http://www.loadavg.com
+*
+* Initialize Loadavg Server
+* 
+* @link https://github.com/loadavg/loadserver
+* @author Karsten Becker
+* @copyright 2014 Sputnik7
+*
+* This file is licensed under the Affero General Public License version 3 or
+* later.
+-->
+
 <!doctype html>
 <html lang="en" xmlns:ng="http://angularjs.org" id="ng-app" ng-app="loadAvgApp">
 <head>
@@ -50,7 +64,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" ui-sref="home">LoadAvg Server</a>
+        <a class="navbar-brand" ui-sref="home">LoadServer</a>
       </div>
       <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
@@ -66,9 +80,12 @@
   <div class="container">
     <div ui-view></div>
 
-    <!-- <div class="footer">
-      <p>&copy; Company 2014. All rights reserved.</p>
-    </div> -->
+    <div class="footer">
+      <p><a href="http://www.loadavg.com/">LoadAvg</a> &copy; Sputnik7 2014. All rights reserved.<br />
+        For comments, suggestions &amp; to report bugs please <a href="http://www.loadavg.com/forums/">visit our forums</a><br />
+        Like LoadAvg ? <a href="http://www.loadavg.com/donate/" title="Make a donation, support LoadAvg">Please donate</a>
+      </p>
+    </div>
   </div>
 
   <hr>
