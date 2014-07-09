@@ -18,6 +18,8 @@ $app->delete('/users/:id', 'deleteUser');
 // routes to server resources
 $app->get('/servers', 'getServers');
 $app->get('/servers/:id', 'getServer');
+$app->get('/servers/:id/data', 'getServerData');
+$app->post('/servers/:id/data', 'addServerData');
 // $app->get('/servers/search/:query', 'findByName');
 $app->put('/servers/:id', 'updateServer');
 $app->delete('/servers/:id', 'deleteServer');
@@ -186,8 +188,10 @@ function getServers() {
 
 // Get the server with the requested ID
 function getServer($id) {
-  $sql = "SELECT servers.*, users.id AS uid, users.first_name, users.last_name FROM servers
-          INNER JOIN users ON servers.user_id = users.id WHERE servers.id=:id";
+  $sql = "SELECT servers.*, users.id AS uid, users.first_name, users.last_name
+          FROM servers
+          INNER JOIN users ON servers.user_id = users.id
+          WHERE servers.id=:id";
 
   try {
     $db = getConnection();
@@ -197,6 +201,25 @@ function getServer($id) {
     $server = $stmt->fetchObject();
     $db = null;
     echo json_encode($server);
+  } catch(PDOException $e) {
+    echo '{"error":{"message":'. $e->getMessage() .'}}';
+  }
+}
+
+// Get the server data with the requested ID
+function getServerData($id) {
+  $sql = "SELECT server_data.* FROM server_data
+          INNER JOIN servers ON server_data.server_id = servers.id
+          WHERE server_data.server_id=:id";
+
+  try {
+    $db = getConnection();
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam("id", $id);
+    $stmt->execute();
+    $server_data = $stmt->fetchAll(PDO::FETCH_OBJ);
+    $db = null;
+    echo json_encode($server_data);
   } catch(PDOException $e) {
     echo '{"error":{"message":'. $e->getMessage() .'}}';
   }
@@ -231,6 +254,28 @@ function addServer($userId) {
     $stmt3->execute();
     $db = null;
     echo json_encode($server);
+  } catch(PDOException $e) {
+    echo '{"error":{"message":'. $e->getMessage() .'}}';
+  }
+}
+
+// Add a new user
+function addServerData($serverId) {
+  $request = \Slim\Slim::getInstance()->request();
+  $server_data = json_decode($request->getBody());
+
+  $sql = "INSERT INTO server_data (server_id, data, created_at, updated_at)
+          VALUES (:server_id, :data, NOW(), NOW())";
+
+  try {
+    $db = getConnection();
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam("server_id", $serverId);
+    $stmt->bindParam("data", $server_data->data);
+    $stmt->execute();
+    $server_data->id = $db->lastInsertId();
+    $db = null;
+    echo json_encode($server_data);
   } catch(PDOException $e) {
     echo '{"error":{"message":'. $e->getMessage() .'}}';
   }

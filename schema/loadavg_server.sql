@@ -53,7 +53,7 @@ CREATE TABLE `servers` (
 CREATE TABLE `server_data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `server_id` int(11) NOT NULL,
-  `server_data` text COLLATE utf8_unicode_ci NOT NULL,
+  `data` text COLLATE utf8_unicode_ci NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
@@ -61,7 +61,24 @@ CREATE TABLE `server_data` (
   FOREIGN KEY (`server_id`)
   REFERENCES servers (`id`)
   ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=16;
+
+INSERT INTO `server_data` (`id`, `server_id`, `data`, `created_at`, `updated_at`) VALUES
+(1, 5, '{"Hardware":{"data":"1393572905|0.04|0.04|0.05\n","timestamp":"1393572905"},"Memory":{"data":"1393572905|1857136|1855708\n","timestamp":"1393572905"},"Network":{"data":"1393572905|0.0|0.0\n","timestamp":"1393572905"}}', NOW(), NOW()),
+(2, 5, '{"Hardware":{"data":"1393573203|0.09|0.06|0.05\n","timestamp":"1393573203"},"Memory":{"data":"1393573203|1856396|1856372\n","timestamp":"1393573203"},"Network":{"data":"1393573203|0.0|0.0\n","timestamp":"1393573203"}}', NOW(), NOW()),
+(3, 5, '{"Hardware":{"data":"1393573501|0.13|0.09|0.06\n","timestamp":"1393573501"},"Memory":{"data":"1393573501|1865332|1867060\n","timestamp":"1393573501"},"Network":{"data":"1393573501|0.08|0.17\n","timestamp":"1393573501"}}', NOW(), NOW()),
+(4, 5, '{"Hardware":{"data":"1393575356|0.39|0.17|0.09\n","timestamp":"1393575356"},"Memory":{"data":"1393575356|1867548|1867780\n","timestamp":"1393575356"},"Network":{"data":"1393575356|0.0|0.0\n","timestamp":"1393575356"}}', NOW(), NOW()),
+(5, 6, '{"Hardware":{"data":"1393575601|0.07|0.15|0.11\n","timestamp":"1393575601"},"Memory":{"data":"1393575601|1870852|1872132\n","timestamp":"1393575601"},"Network":{"data":"1393575601|0.1|0.15\n","timestamp":"1393575601"}}', NOW(), NOW()),
+(6, 6, '{"Hardware":{"data":"1393575901|0.03|0.12|0.12\n","timestamp":"1393575901"},"Memory":{"data":"1393575902|1864672|1864628\n","timestamp":"1393575902"},"Network":{"data":"1393575902|0|0\n","timestamp":"1393575902"}}', NOW(), NOW()),
+(7, 6, '{"Hardware":{"data":"1393576201|0.06|0.09|0.11\n","timestamp":"1393576201"},"Memory":{"data":"1393576201|1869872|1869880\n","timestamp":"1393576201"},"Network":{"data":"1393576201|0.06|0.05\n","timestamp":"1393576201"}}', NOW(), NOW()),
+(8, 7, '{"Hardware":{"data":"1393576505|0.20|0.14|0.13\n","timestamp":"1393576505"},"Memory":{"data":"1393576505|1872340|1872508\n","timestamp":"1393576505"},"Network":{"data":"1393576505|0.07|0.07\n","timestamp":"1393576505"}}', NOW(), NOW()),
+(9, 7, '{"Hardware":{"data":"1393576804|0.18|0.13|0.13\n","timestamp":"1393576804"},"Memory":{"data":"1393576804|1873800|1874000\n","timestamp":"1393576804"},"Network":{"data":"1393576804|0.0|0.0\n","timestamp":"1393576804"}}', NOW(), NOW()),
+(10, 7, '{"Hardware":{"data":"1393578901|0.02|0.09|0.12\n","timestamp":"1393578901"},"Memory":{"data":"1393578901|1873360|1873764\n","timestamp":"1393578901"},"Network":{"data":"1393578901|0.01|0.02\n","timestamp":"1393578901"}}', NOW(), NOW()),
+(11, 8, '{"Hardware":{"data":"1393579205|0.09|0.08|0.12\n","timestamp":"1393579205"},"Memory":{"data":"1393579205|1870588|1869944\n","timestamp":"1393579205"},"Network":{"data":"1393579205|0.0|0.0\n","timestamp":"1393579205"}}', NOW(), NOW()),
+(12, 8, '{"Hardware":{"data":"1393579504|0.16|0.08|0.11\n","timestamp":"1393579504"},"Memory":{"data":"1393579504|1869828|1869488\n","timestamp":"1393579504"},"Network":{"data":"1393579504|0.0|0.0\n","timestamp":"1393579504"}}', NOW(), NOW()),
+(13, 8, '{"Hardware":{"data":"1393579801|0.02|0.06|0.10\n","timestamp":"1393579801"},"Memory":{"data":"1393579801|1871000|1869780\n","timestamp":"1393579801"},"Network":{"data":"1393579801|0.0|0.0\n","timestamp":"1393579801"}}', NOW(), NOW()),
+(14, 8, '{"Hardware":{"data":"1393580105|0.00|0.02|0.07\n","timestamp":"1393580105"},"Memory":{"data":"1393580105|1870440|1870472\n","timestamp":"1393580105"},"Network":{"data":"1393580105|0.0|0.0\n","timestamp":"1393580105"}}', NOW(), NOW()),
+(15, 8, '{"Hardware":{"data":"1393580406|0.00|0.02|0.05\n","timestamp":"1393580406"},"Memory":{"data":"1393580406|1873956|1875520\n","timestamp":"1393580406"},"Network":{"data":"1393580406|0.07|0.06\n","timestamp":"1393580406"}}', NOW(), NOW());
 
 
 
