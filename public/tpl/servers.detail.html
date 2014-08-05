@@ -11,3 +11,41 @@
 <p>Updated: <b>{{server.updated_at}}</b></p>
 
 <hr>
+
+<h2>Server Data</h2>
+
+<div class="row">
+  <table class="table table-striped table-condensed table-hover">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th style="text-align:center;">Streaming Data</th>
+        <th>Created</th>
+        <th>Updated</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="sData in server_data | startFrom:(currentPage-1)*itemsPerPage | limitTo:itemsPerPage">
+        <td>{{$index + 1}}</td>
+        <td>{{sData.data}}</td>
+        <td>{{sData.created_at}}</td>
+        <td>{{sData.updated_at}}</td>
+        <td><span class="badge badge-default">N/A</span></td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <td colspan="6">
+        <div class="col-md-12" data-ng-show="serverDataFilteredItems > 0">
+          <div data-pagination="" data-page="currentPage" data-on-select-page="setPage(page)" data-boundary-links="true" data-total-items="serverDataFilteredItems" items-per-page="itemsPerPage" class="pagination-small pull-right" data-previous-text="&laquo;" data-next-text="&raquo;"></div>
+        </div>
+      </td>
+    </tfoot>
+  </table>
+  <div class="col-md-12" data-ng-show="serverDataFilteredItems == 0">
+    <div class="col-md-12">
+      <h4>No server data found</h4>
+    </div>
+  </div>
+
+</div>

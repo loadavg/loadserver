@@ -219,6 +219,15 @@ loadAvgApp.controller('EditController',
     $scope.server = data;
   });
 
+  // Return data for a specified server
+  $http.get('api/servers/' + sid + '/data').success(function(data){
+    $scope.server_data = data;
+    $scope.currentPage = 1;
+    $scope.itemsPerPage = 5;
+    $scope.serverDataFilteredItems = $scope.server_data.length;
+    $scope.totalItems = $scope.server_data.lenght;
+  });
+
   // Update specified user record
   $scope.update_user = function(user, EditUserForm) {
     console.log(user);
