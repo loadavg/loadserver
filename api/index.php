@@ -6,8 +6,8 @@ $app = new \Slim\Slim();
 
 // routes to user resources
 $app->get('/users', 'getUsers');
-// $app->get('/users/:id', 'getUser');
-$app->get('/users/:token', 'getUserByToken');
+$app->get('/users/:id', 'getUser');
+$app->get('/users/:token/data', 'getUserByToken');
 $app->get('/users/:id/servers', 'getUserServers');
 $app->get('/users/:id/serverCount', 'getServerCount');
 // $app->get('/users/search/:query', 'findByName');
@@ -19,9 +19,9 @@ $app->delete('/users/:id', 'deleteUser');
 // routes to server resources
 $app->get('/servers', 'getServers');
 $app->get('/servers/:id', 'getServer');
+$app->get('/servers/:token/t', 'getServerByToken');
 $app->get('/servers/:id/data', 'getServerData');
 $app->post('/servers/:id/data', 'addServerData');
-$app->post('/servers/:token/data', 'addServerDataByToken');
 // $app->get('/servers/search/:query', 'findByName');
 $app->put('/servers/:id', 'updateServer');
 $app->delete('/servers/:id', 'deleteServer');
@@ -225,6 +225,26 @@ function getServer($id) {
   }
 }
 
+// Get the server with the requested ID
+function getServerByToken($server_token) {
+  $sql = "SELECT servers.*, users.id AS uid, users.first_name, users.last_name
+          FROM servers
+          INNER JOIN users ON servers.user_id = users.id
+          WHERE servers.server_token=:server_token";
+
+  try {
+    $db = getConnection();
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam("server_token", $server_token);
+    $stmt->execute();
+    $server = $stmt->fetchObject();
+    $db = null;
+    echo json_encode($server);
+  } catch(PDOException $e) {
+    echo '{"error":{"message":'. $e->getMessage() .'}}';
+  }
+}
+
 // Get the server data with the requested ID
 function getServerData($id) {
   $sql = "SELECT server_data.* FROM server_data
@@ -249,8 +269,10 @@ function addServer($userId) {
   $request = \Slim\Slim::getInstance()->request();
   $server = json_decode($request->getBody());
 
-  $sql = "INSERT INTO servers (user_id, server_name, created_at, updated_at)
-          VALUES (:user_id, :server_name, NOW(), NOW())";
+  $server_token = md5($server->server_name);
+
+  $sql = "INSERT INTO servers (user_id, server_name, server_token, created_at, updated_at)
+          VALUES (:user_id, :server_name, :server_token, NOW(), NOW())";
 
   $sql2 = "SELECT COUNT(*) AS server_count FROM servers WHERE user_id=:user_id";
 
@@ -263,6 +285,7 @@ function addServer($userId) {
     $stmt3 = $db->prepare($sql3);
     $stmt->bindParam("user_id", $userId);
     $stmt->bindParam("server_name", $server->server_name);
+    $stmt->bindParam("server_token", $server_token);
     $stmt->execute();
     $server->id = $db->lastInsertId();
     $stmt2->bindParam("user_id", $userId);
@@ -280,9 +303,9 @@ function addServer($userId) {
 
 // Add a new user
 function addServerData($serverId) {
-  global $app;
-
-  $server_data = $app->request()->params('data');
+  // global $app;
+  $request = \Slim\Slim::getInstance()->request();
+  $server_data = $request->params('data');
 
   $sql = "INSERT INTO server_data (server_id, data, created_at, updated_at)
           VALUES (:server_id, :data, NOW(), NOW())";
