@@ -6,7 +6,8 @@ $app = new \Slim\Slim();
 
 // routes to user resources
 $app->get('/users', 'getUsers');
-$app->get('/users/:id', 'getUser');
+// $app->get('/users/:id', 'getUser');
+$app->get('/users/:token', 'getUserByToken');
 $app->get('/users/:id/servers', 'getUserServers');
 $app->get('/users/:id/serverCount', 'getServerCount');
 // $app->get('/users/search/:query', 'findByName');
@@ -20,6 +21,7 @@ $app->get('/servers', 'getServers');
 $app->get('/servers/:id', 'getServer');
 $app->get('/servers/:id/data', 'getServerData');
 $app->post('/servers/:id/data', 'addServerData');
+$app->post('/servers/:token/data', 'addServerDataByToken');
 // $app->get('/servers/search/:query', 'findByName');
 $app->put('/servers/:id', 'updateServer');
 $app->delete('/servers/:id', 'deleteServer');
@@ -60,6 +62,23 @@ function getUser($id) {
     $db = getConnection();
     $stmt = $db->prepare($sql);
     $stmt->bindParam("id", $id);
+    $stmt->execute();
+    $user = $stmt->fetchObject();
+    $db = null;
+    echo json_encode($user);
+  } catch(PDOException $e) {
+    echo '{"error":{"message":'. $e->getMessage() .'}}';
+  }
+}
+
+// Get user with the requested API token
+function getUserByToken($token) {
+  $sql = "SELECT * FROM users WHERE api_token=:token";
+
+  try {
+    $db = getConnection();
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam("token", $token);
     $stmt->execute();
     $user = $stmt->fetchObject();
     $db = null;
@@ -261,8 +280,9 @@ function addServer($userId) {
 
 // Add a new user
 function addServerData($serverId) {
-  $request = \Slim\Slim::getInstance()->request();
-  $server_data = json_decode($request->getBody());
+  global $app;
+
+  $server_data = $app->request()->params('data');
 
   $sql = "INSERT INTO server_data (server_id, data, created_at, updated_at)
           VALUES (:server_id, :data, NOW(), NOW())";
@@ -271,7 +291,7 @@ function addServerData($serverId) {
     $db = getConnection();
     $stmt = $db->prepare($sql);
     $stmt->bindParam("server_id", $serverId);
-    $stmt->bindParam("data", $server_data->data);
+    $stmt->bindParam("data", $server_data);
     $stmt->execute();
     $server_data->id = $db->lastInsertId();
     $db = null;
@@ -279,6 +299,7 @@ function addServerData($serverId) {
   } catch(PDOException $e) {
     echo '{"error":{"message":'. $e->getMessage() .'}}';
   }
+
 }
 
 // Update server with specified ID

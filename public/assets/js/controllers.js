@@ -166,7 +166,7 @@ loadAvgApp.controller('ListController',
     $scope.currentPage = 1;
     $scope.itemsPerPage = 15;
     $scope.userFilteredItems = $scope.users.length;
-    $scope.totalItems = $scope.users.lenght;
+    $scope.totalItems = $scope.users.length;
   });
 
   $http.get('api/servers').success(function(data){
@@ -174,7 +174,7 @@ loadAvgApp.controller('ListController',
     $scope.currentPage = 1;
     $scope.itemsPerPage = 15;
     $scope.serverFilteredItems = $scope.servers.length;
-    $scope.totalItems = $scope.servers.lenght;
+    $scope.totalItems = $scope.servers.length;
   });
 
   // callback for ng-click cancel
@@ -225,7 +225,7 @@ loadAvgApp.controller('EditController',
     $scope.currentPage = 1;
     $scope.itemsPerPage = 5;
     $scope.serverDataFilteredItems = $scope.server_data.length;
-    $scope.totalItems = $scope.server_data.lenght;
+    $scope.totalItems = $scope.server_data.length;
   });
 
   // Update specified user record
