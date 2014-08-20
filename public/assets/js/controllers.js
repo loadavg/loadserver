@@ -170,6 +170,7 @@ loadAvgApp.controller('ListController',
   });
 
   $http.get('api/servers').success(function(data){
+    // console.log(data);
     $scope.servers = data;
     $scope.currentPage = 1;
     $scope.itemsPerPage = 15;
@@ -221,6 +222,7 @@ loadAvgApp.controller('EditController',
 
   // Return data for a specified server
   $http.get('api/servers/' + sid + '/data').success(function(data){
+    console.log("server id: " + sid);
     $scope.server_data = data;
     $scope.currentPage = 1;
     $scope.itemsPerPage = 5;

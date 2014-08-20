@@ -26,6 +26,9 @@ $app->post('/servers/:id/data', 'addServerData');
 $app->put('/servers/:id', 'updateServer');
 $app->delete('/servers/:id', 'deleteServer');
 
+
+header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
 $app->run();
 
 
@@ -113,6 +116,7 @@ function getServerCount($userId) {
 
 // Add a new user
 function addUser() {
+
   $request = \Slim\Slim::getInstance()->request();
   $user = json_decode($request->getBody());
 
@@ -257,6 +261,7 @@ function getServerData($id) {
     $stmt->bindParam("id", $id);
     $stmt->execute();
     $server_data = $stmt->fetchAll(PDO::FETCH_OBJ);
+    // print_r($server_data);
     $db = null;
     echo json_encode($server_data);
   } catch(PDOException $e) {
@@ -367,8 +372,7 @@ function deleteServer($id) {
 function hash_password($password) {
   // Configs for password_hash method
   $options = [
-    'cost' => 11,
-    'salt' => mcrypt_create_iv(22, MCRYPT_DEV_URANDOM),
+    'cost' => 12,
   ];
 
   $new_password = password_hash($password, PASSWORD_BCRYPT, $options);
