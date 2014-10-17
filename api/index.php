@@ -19,9 +19,20 @@ $app->delete('/users/:id', 'deleteUser');
 // routes to server resources
 $app->get('/servers', 'getServers');
 $app->get('/servers/:id', 'getServer');
-$app->get('/servers/:token/t', 'getServerByToken');
+$app->get('/servers/:token/t', 'getServerByToken'); // depreciated ?
 $app->get('/servers/:id/data', 'getServerData');
+
+
+//validation rountines
+$app->get('/users/:token/va', 'validateUserApiKey'); // was /data getUserByToken
+$app->get('/servers/:token/vs', 'validateServerToken');  //was /t getServerByToken above
+$app->get('/servers/:s_token/:a_key/v', 'validateUserApiKeyAndToken');  
+
+
+//used for the client to push data up to the server
+//we need to add UserApiKey and Token to this to validate on push on server
 $app->post('/servers/:id/data', 'addServerData');
+
 // $app->get('/servers/search/:query', 'findByName');
 $app->put('/servers/:id', 'updateServer');
 $app->delete('/servers/:id', 'deleteServer');
@@ -248,6 +259,93 @@ function getServerByToken($server_token) {
     echo '{"error":{"message":'. $e->getMessage() .'}}';
   }
 }
+
+/*
+ *
+ * BEGIN Validation Routines
+ *
+ */
+
+// Validate the Users API Key
+function validateUserApiKey($token) {
+  $sql = "SELECT * FROM users WHERE api_token=:token";
+
+  try {
+    $db = getConnection();
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam("token", $token);
+    $stmt->execute();
+    $user = $stmt->fetchObject();
+    $db = null;
+    
+    if ($user) {
+      echo "true";
+    } else {
+      echo "false";
+    }
+    //echo json_encode($user);
+  } catch(PDOException $e) {
+    echo '{"error":{"message":'. $e->getMessage() .'}}';
+  }
+}
+
+// Validate the server token
+function validateServerToken($server_token) {
+  $sql = "SELECT servers.*, users.id AS uid, users.first_name, users.last_name
+          FROM servers
+          INNER JOIN users ON servers.user_id = users.id
+          WHERE servers.server_token=:server_token";
+
+  try {
+    $db = getConnection();
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam("server_token", $server_token);
+    $stmt->execute();
+    $server = $stmt->fetchObject();
+    $db = null;
+
+    if ($server) {
+      echo "true";
+    } else {
+      echo "false";
+    }
+    //echo json_encode($server);
+  } catch(PDOException $e) {
+    echo '{"error":{"message":'. $e->getMessage() .'}}';
+  }
+}
+
+// Validate the server token against users api key
+function validateUserApiKeyAndToken($server_token, $api_token) {
+
+  $sql = "SELECT servers.*, users.*
+          FROM servers
+          INNER JOIN users ON servers.user_id = users.id
+          WHERE servers.server_token=:server_token AND users.api_token=:api_token";
+
+  try {
+    $db = getConnection();
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam("server_token", $server_token);
+    $stmt->bindParam("api_token", $api_token);
+    $stmt->execute();
+    $server = $stmt->fetchObject();
+    $db = null;
+
+    if ($server) {
+      echo "true";
+    } else {
+      echo "false";
+    }
+    // echo json_encode($server);
+  } catch(PDOException $e) {
+    echo '{"error":{"message":'. $e->getMessage() .'}}';
+  }
+}
+
+/*
+ * END Validation Routines
+ */
 
 // Get the server data with the requested ID
 function getServerData($id) {
