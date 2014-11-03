@@ -32,7 +32,8 @@
       <tfoot>
         <td colspan="6">
           <div class="col-md-12" data-ng-show="userFilteredItems > 0">
-            <div data-pagination="" data-page="currentPage" data-on-select-page="setPage(page)" data-boundary-links="true" data-total-items="userFilteredItems" items-per-page="itemsPerPage" class="pagination-small pull-right" data-previous-text="&laquo;" data-next-text="&raquo;"></div>
+            <pagination total-items="bigTotalItems" ng-model="bigCurrentPage" max-size="maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages"></pagination>
+            <!-- <div data-pagination="" data-page="currentPage" data-on-select-page="setPage(page)" data-boundary-links="true" data-total-items="userFilteredItems" items-per-page="itemsPerPage" class="pagination-small pull-right" data-previous-text="&laquo;" data-next-text="&raquo;"></div> -->
           </div>
         </td>
       </tfoot>

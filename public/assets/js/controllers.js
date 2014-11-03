@@ -167,6 +167,9 @@ loadAvgApp.controller('ListController',
     $scope.itemsPerPage = 15;
     $scope.userFilteredItems = $scope.users.length;
     $scope.totalItems = $scope.users.length;
+    $scope.maxSize = 5;
+    $scope.bigTotalItems = $scope.users.length;
+    $scope.bigCurrentPage = 1;
   });
 
   $http.get('api/servers').success(function(data){
@@ -185,6 +188,10 @@ loadAvgApp.controller('ListController',
 
   $scope.setPage = function(pageNo) {
     $scope.currentPage = pageNo;
+  };
+
+  $scope.pageChanged = function() {
+    console.log('Page changed to: ' + $scope.currentPage);
   };
 
   $scope.filter = function() {
