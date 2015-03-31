@@ -26,7 +26,7 @@ $app->get('/servers/:id/data', 'getServerData');
 //validation rountines
 $app->get('/users/:token/va', 'validateUserApiKey'); // was /data getUserByToken
 $app->get('/servers/:token/vs', 'validateServerToken');  //was /t getServerByToken above
-$app->get('/servers/:s_token/:a_key/v', 'validateUserApiKeyAndToken');  
+$app->get('/servers/:s_token/:a_key/v', 'validateUserApiKeyAndToken');
 
 
 //used for the client to push data up to the server
@@ -55,7 +55,7 @@ function verifyKey(\Slim\Route $route) {
 
 // Return a list of all the users
 function getUsers() {
-  $sql = "SELECT * FROM users ORDER BY id DESC";
+  $sql = "SELECT users.* FROM users ORDER BY id DESC";
 
   try {
     $db = getConnection();
@@ -277,7 +277,7 @@ function validateUserApiKey($token) {
     $stmt->execute();
     $user = $stmt->fetchObject();
     $db = null;
-    
+
     if ($user) {
       echo "true";
     } else {

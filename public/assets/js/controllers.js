@@ -1,4 +1,4 @@
-var loadAvgApp = angular.module('loadAvgApp', ['ui.router', 'ui.bootstrap']);
+var loadAvgApp = angular.module('loadAvgApp', ['ui.router', 'ui.bootstrap', 'ui.bootstrap.pagination']);
 
 // Setting up Object-based states
 /*var users = {
@@ -162,6 +162,7 @@ loadAvgApp.controller('ListController',
 
   // Return a list of all the users
   $http.get('api/users').success(function(data){
+    // console.log(data);
     $scope.users = data;
     $scope.currentPage = 1;
     $scope.itemsPerPage = 15;
@@ -179,6 +180,9 @@ loadAvgApp.controller('ListController',
     $scope.itemsPerPage = 15;
     $scope.serverFilteredItems = $scope.servers.length;
     $scope.totalItems = $scope.servers.length;
+    $scope.maxSize = 25;
+    $scope.bigTotalItems = $scope.servers.length;
+    $scope.bigCurrentPage = 1;
   });
 
   // callback for ng-click cancel
@@ -235,6 +239,9 @@ loadAvgApp.controller('EditController',
     $scope.itemsPerPage = 5;
     $scope.serverDataFilteredItems = $scope.server_data.length;
     $scope.totalItems = $scope.server_data.length;
+    // $scope.maxSize = 25;
+    // $scope.bigTotalItems = $scope.server_data.length;
+    // $scope.bigCurrentPage = 1;
   });
 
   // Update specified user record
@@ -258,7 +265,7 @@ loadAvgApp.controller('EditController',
   // Delete specififed user
   $scope.delete_user = function(user) {
     console.log(user);
-    var deleteUser = confirm('Are you absolutely sure you want to destroy this user?');
+    var deleteUser = confirm('Are you absolutely sure you want to remove this user?');
 
     if (deleteUser) {
       $http.delete('api/users/' + user.id);
@@ -269,7 +276,7 @@ loadAvgApp.controller('EditController',
   // Delete specififed server
   $scope.delete_server = function(server) {
     console.log(server);
-    var deleteServer = confirm('Are you absolutely sure you want to destroy this server?');
+    var deleteServer = confirm('Are you absolutely sure you want to remove this server?');
 
     if (deleteServer) {
       $http.delete('api/servers/' + server.id);
